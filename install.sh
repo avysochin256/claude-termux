@@ -70,15 +70,18 @@ else
     # glibc-repo only adds an apt source; the glibc packages live in it.
     if [ ! -f "$TERMUX_PREFIX/etc/apt/sources.list.d/glibc.list" ]; then
         info "adding the termux-glibc repository"
-        pkg install -y glibc-repo >/dev/null || die "could not install glibc-repo."
+        # Keep apt's chatter (including its "unstable CLI interface" warning)
+        # out of the way unless something actually fails.
+        pkg_out="$(pkg install -y glibc-repo 2>&1)" \
+            || { printf '%s\n' "$pkg_out" >&2; die "could not install glibc-repo."; }
         apt-get update -qq || true
     fi
     # ripgrep: the launcher sets USE_BUILTIN_RIPGREP=0 so Claude Code uses a
     # bionic-native rg instead of the glibc one bundled in the binary.
     # zstd/jq are optional but make this installer smaller and faster.
     info "installing glibc, ripgrep, git, curl, zstd, jq"
-    pkg install -y glibc ripgrep git curl zstd jq >/dev/null \
-        || die "package installation failed; run 'pkg update' and try again."
+    pkg_out="$(pkg install -y glibc ripgrep git curl zstd jq 2>&1)" \
+        || { printf '%s\n' "$pkg_out" >&2; die "package installation failed; run 'pkg update' and try again."; }
 fi
 
 command -v curl >/dev/null 2>&1 || die "curl is required but not installed."
