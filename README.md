@@ -4,7 +4,7 @@ Run [Claude Code](https://code.claude.com) natively on Termux — on the real
 Android kernel, with no `proot`, no `ptrace`, and no emulation.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/avyssochin/claude-termux/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/avysochin256/claude-termux/main/install.sh | bash
 ```
 
 Then run `claude`.

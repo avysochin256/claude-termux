@@ -2,7 +2,7 @@
 #
 # claude-termux — install Claude Code natively on Termux (no proot, no ptrace).
 #
-#   curl -fsSL https://raw.githubusercontent.com/avyssochin/claude-termux/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/avysochin256/claude-termux/main/install.sh | bash
 #
 # What this does, in short:
 #   1. installs Termux's glibc package (Claude Code's Linux build is glibc-linked,
@@ -30,7 +30,7 @@ SHARE="${CLAUDE_TERMUX_HOME:-$TERMUX_HOME/.local/share/claude-termux}"
 BINDIR="${CLAUDE_TERMUX_BINDIR:-$TERMUX_PREFIX/bin}"
 
 DOWNLOAD_BASE="${CLAUDE_TERMUX_DOWNLOAD_BASE:-https://downloads.claude.ai/claude-code-releases}"
-INSTALLER_URL="${CLAUDE_TERMUX_INSTALLER_URL:-https://raw.githubusercontent.com/avyssochin/claude-termux/main/install.sh}"
+INSTALLER_URL="${CLAUDE_TERMUX_INSTALLER_URL:-https://raw.githubusercontent.com/avysochin256/claude-termux/main/install.sh}"
 PLATFORM=linux-arm64
 
 # Set to 1 to manage Termux packages yourself.
