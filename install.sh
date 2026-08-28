@@ -263,7 +263,18 @@ cat > "$BINDIR/claude-update" <<'UPDATER'
 # verify a newer official binary. Your ~/.claude config is left untouched.
 set -euo pipefail
 url="${CLAUDE_TERMUX_INSTALLER_URL:-@INSTALLER_URL@}"
-exec curl -fsSL "$url" | bash -s -- "${1:-latest}"
+
+# Download to a file first rather than piping into bash: a connection that
+# drops halfway would otherwise leave bash executing a truncated script.
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+if ! curl -fsSL "$url" -o "$tmp"; then
+    echo "claude-update: could not fetch the installer from" >&2
+    echo "  $url" >&2
+    echo "Set CLAUDE_TERMUX_INSTALLER_URL to point somewhere else; a file:// path works too." >&2
+    exit 1
+fi
+exec bash "$tmp" "${1:-latest}"
 UPDATER
 
 cat > "$BINDIR/claude-uninstall" <<'UNINSTALLER'
