@@ -1,7 +1,9 @@
 # claude-termux
 
 Run [Claude Code](https://code.claude.com) natively on Termux — on the real
-Android kernel, with no `proot`, no `ptrace`, and no emulation.
+Android kernel, with no `proot`, no `ptrace`, and no emulation. Anthropic's
+official binary is installed byte-for-byte as published: **no patching, no
+repackaging**, so you can check it against Anthropic's own SHA-256 at any time.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/avysochin256/claude-termux/main/install.sh | bash
