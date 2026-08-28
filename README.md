@@ -9,6 +9,13 @@ curl -fsSL https://raw.githubusercontent.com/avysochin256/claude-termux/main/ins
 
 Then run `claude`.
 
+![Installing Claude Code on Termux](docs/demo.gif)
+
+<sub>A real first install on this repo's own installer — nothing staged. The
+70 MiB compressed download is time-compressed in the recording; everything else
+plays at the speed it happened. Replay the raw capture with
+`asciinema play docs/demo.cast`.</sub>
+
 Anthropic ships an official `linux-arm64` build of Claude Code, and your phone
 is an arm64 Linux machine. The only thing standing between them is libc: that
 build is linked against **glibc**, and Termux is linked against Android's
