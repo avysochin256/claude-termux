@@ -188,6 +188,29 @@ exists and is executable, and that `CLAUDE_TERMUX_SHELL_FIX` is not set to `0`.
 **Checksum mismatch during install** — a corrupted or intercepted download.
 Re-run; it will not install an unverified binary.
 
+**`claude` still runs, or fails with `No such file or directory`, after
+`claude-uninstall`** — your shell cached the old path. Bash keeps its own
+hash table, so `command -v claude` will happily report a file that is already
+gone. Clear it with `hash -r`, or just open a new session. To confirm the
+uninstall really is complete:
+
+```sh
+hash -r
+command -v claude                  # prints nothing
+ls ~/.local/share/claude-termux    # No such file or directory
+```
+
+If `command -v claude` still prints a path after `hash -r`, it is a different
+launcher earlier on your `PATH` — a leftover from an older install under
+`~/bin` or `~/.local/bin`, for instance. `claude-uninstall` only removes what
+this installer put there.
+
+Note that `claude-uninstall` deliberately keeps two things: `~/.claude` (your
+config, credentials and history — easily 100 MB once it has some sessions in
+it) and the Termux `glibc` package, which other software may be using. If you
+are uninstalling to reclaim space, remove those yourself with `rm -rf ~/.claude`
+and `pkg uninstall glibc`.
+
 ## Verifying the binary yourself
 
 ```sh
