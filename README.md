@@ -87,7 +87,7 @@ Termux sets `LD_PRELOAD=…/libtermux-exec.so` so that `#!/bin/sh` shebangs work
 That library is bionic-linked; preloading it into a glibc process aborts the
 loader before `main()`. The launcher clears `LD_PRELOAD` for the child.
 
-### 3. `grep` and `find` break inside Claude Code's Bash tool
+### 3. `grep` and `find` inside Claude Code's Bash tool
 
 This one is subtle. Claude Code exports `CLAUDE_CODE_EXECPATH=process.execPath`
 into every shell it spawns, and defines `grep` and `find` shell functions that
@@ -119,6 +119,23 @@ The fix has two halves:
   replaces it with the script path. The launcher recovers it from the mode flag
   (`-G` → `ugrep`, `-S` → `bfs`) and passes it through with the loader's
   `--argv0`.
+
+With both halves in place, `grep` and `find` work normally inside Claude Code,
+routed through its bundled ripgrep and `bfs` exactly as they are on a desktop
+Linux install. To confirm it in a running session:
+
+```sh
+grep -c DISABLE_AUTOUPDATER ~/claude-termux/install.sh   # prints 1
+echo "$CLAUDE_CODE_EXECPATH"    # the launcher, not .../ld-linux-aarch64.so.1
+```
+
+There is no ambiguity about which path you are on: if the fix is not active the
+first command fails outright with the `-G:` error above rather than quietly
+falling back, and `CLAUDE_CODE_EXECPATH` still points at the loader.
+
+One gotcha: the launcher exports the fix at **startup**, so a `claude` session
+that was already running when you installed or updated keeps the old, broken
+environment. Restart `claude` to pick it up.
 
 Set `CLAUDE_TERMUX_SHELL_FIX=0` to turn this off and leave `grep`/`find` broken.
 
