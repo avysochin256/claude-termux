@@ -220,3 +220,26 @@ curl -s https://downloads.claude.ai/claude-code-releases/$(cat ~/.local/share/cl
 ```
 
 The two should match. This repo ships no binaries of its own.
+
+### What the installer refuses
+
+The SHA-256 of the *decompressed binary*, as published in Anthropic's
+`manifest.json`, is the only thing that gates installation. Both refusal paths
+have been tested against a local stand-in release server:
+
+| Situation | Result |
+| --- | --- |
+| Downloaded binary does not match the manifest | Aborts, exit 1, nothing installed |
+| An existing install is present when that happens | Left byte-for-byte untouched |
+| `claude.zst` matches `manifest.zst.json` but decompresses to different bytes | Rejected, falls back to the uncompressed download |
+| The uncompressed download is also wrong | Aborts, exit 1, nothing installed |
+| Any aborted attempt | Partial downloads removed, no launcher written |
+
+The third row is the one worth spelling out: a compressed artifact passing its
+own checksum is *not* treated as sufficient. It is decompressed and re-checked
+against the binary's own hash, so a correctly-signed-but-wrong-contents archive
+does not get installed.
+
+The second row matters for `claude-update`: a corrupted or intercepted update
+cannot damage a working install, because the new file only replaces the real
+one after it verifies.
